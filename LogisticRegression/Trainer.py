@@ -26,7 +26,7 @@ def main():
     vals=np.reshape(vals,(1,209),order='C') # row vector
     w=np.random.rand(12288,1)
     b=np.random.random()   
-    for i in range(1000):
+    for i in range(5000):
         r=res(w,imgs,b)
         a=sigmoid(r)
         dw=np.matmul(imgs,(a-vals).transpose())/209
