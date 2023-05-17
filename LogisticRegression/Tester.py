@@ -18,7 +18,9 @@ def main():
     prs=np.where(prs>0.5,1,0)
     print(prs)
     print(vals)
+    
     #LOOP TO BE REMOVED IF POSSIBLE
+    #eq=len(np.where((prs==1 & vals==1) | (prs==0 & vals==0)))
     eq=0
     for i in range(vals.shape[1]):
         if vals[0][i]==prs[0][i]:
