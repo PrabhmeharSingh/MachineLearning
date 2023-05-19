@@ -8,7 +8,7 @@ def sigmoid(g):
 def loss(v,p):
     return (-1*(v*np.log(p)+(1-v)*np.log((1-p)))) #(1,209)
 def cost(l,m):
-    return np.sum(l)/m #number
+    return np.sum(l)/m #number 
 
 #basic differentiation not used
 def gradientchangew(i,r,v,p,m):
