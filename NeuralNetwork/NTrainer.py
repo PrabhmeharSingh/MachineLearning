@@ -18,8 +18,12 @@ def fowrardPropagation(Weights,Biases,Inp,R,V,numLayers):
             Inp[i+1] = V[i]
         elif i == numLayers-1:
             V[i] = sigmoid(R[i])
+        
 
-
+def loss(v,p):
+    return (-1*(v*np.log(p)+(1-v)*np.log((1-p)))) #(1,209)
+def cost(l,m):
+    return np.sum(l)/m #number 
 
 
 def main():
@@ -35,13 +39,13 @@ def main():
     W3=np.random.rand(W2.shape[1],5) #Weights for layer 3 with 5 hidden units
     W4=np.random.rand(W3.shape[1],3) #Weights for layer 4 with 3 hidden units
     Wout=np.random.rand(W4.shape[1],1) #Weights for output layer with 1 unit
-    Ws=(W1,W2,W3,W4,Wout)
+    Ws=[W1,W2,W3,W4,Wout]
     B1=np.zeros((W1.shape[1],1)) #Biases for layer 1 
     B2=np.zeros((W2.shape[1],1)) #Biases for layer 2
     B3=np.zeros((W3.shape[1],1)) #Biases for layer 3
     B4=np.zeros((W4.shape[1],1)) #Biases for layer 4
     Bout=np.zeros((Wout.shape[1],1)) #Biases for layer out
-    Bs=(B1,B2,B3,B4,Bout)
+    Bs=[B1,B2,B3,B4,Bout]
     numLayers=len(Ws)
     #Inputs res and vals for the 5 layers
     Inps=[imgs,0,0,0,0]
@@ -50,12 +54,27 @@ def main():
     dWs=[0,0,0,0,0]
     dBs=[0,0,0,0,0]
     dInps=[0,0,0,0,0] 
-    for i in range(5000):
+    #fowrardPropagation(Ws,Bs,Inps,res,vs,numLayers)
+    for x in range(100000):
+        fowrardPropagation(Ws,Bs,Inps,res,vs,numLayers)
         dWs[numLayers-1]=np.matmul(Inps[numLayers-1],(vs[numLayers-1]-vals).transpose())/numExamples
         dBs[numLayers-1]=np.sum((vs[numLayers-1]-vals))/numExamples
-        dInps[numLayers-1]=Ws[numLayers-1]*(vs[numLayers-1]-vals)/numExamples #(3,209)
-        dinp_res=np.where(res[numLayers-2]>0,res[numLayers-2],0)
-        dres=dinp_res*dInps[numLayers-1] 
+        dInps[numLayers-1]=Ws[numLayers-1]*(vs[numLayers-1]-vals) #(3,209)
+        for i in range(numLayers-2,-1,-1):
+            dinp_res=np.where(res[i]>0,1,0)
+            dres=dinp_res*dInps[i+1]
+            dWs[i]=np.matmul(Inps[i],dres.transpose())/numExamples
+            dBs[i]=np.expand_dims(np.sum(dres,axis=1)/numExamples,1)
+            dInps[i]=np.matmul(Ws[i],dres)
+        for j in range(numLayers):
+            Ws[j]=Ws[j]-0.01*dWs[j]
+            Bs[j]=Bs[j]-0.01*dBs[j]
+        if(x%100==0):
+            print(vs[4],vals)
+        
+        
+    
+
 
 
 
